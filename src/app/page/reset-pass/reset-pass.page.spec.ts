@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HomePage } from './home.page';
+import { ResetPassPage } from './reset-pass.page';
 
-describe('HomePage', () => {
-  let component: HomePage;
-  let fixture: ComponentFixture<HomePage>;
+describe('ResetPassPage', () => {
+  let component: ResetPassPage;
+  let fixture: ComponentFixture<ResetPassPage>;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HomePage);
+    fixture = TestBed.createComponent(ResetPassPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

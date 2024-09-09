@@ -1,0 +1,52 @@
+.header {
+    margin-top: 100px;
+    margin-bottom: 30px;
+    text-align: center;
+    padding: 0 20px; /* Añade padding lateral para evitar que el texto se quede pegado al borde */
+}
+
+.titulo {
+    font-size: 2rem;
+    white-space: normal; /* Permite que el texto se divida en varias líneas si es necesario */
+    word-wrap: break-word; /* Si es muy largo, que rompa la palabra y continúe en la siguiente línea */
+}
+
+.subtitulo {
+    color: gray;
+    font-size: 0.9rem;
+}
+
+.btnlogin {
+    position: absolute;
+    right: 0px;
+    padding-right: 16px;
+    --background-focused: #88f4be;
+    --border-radius: 15px;
+}
+
+ion-item {
+    border-radius: 15px;
+    margin-bottom: 16px;
+}
+
+ion-icon {
+    padding-right: 10px;
+}
+
+/* Ajustes para pantallas más pequeñas */
+@media (max-width: 480px) {
+    .titulo {
+        font-size: 1.4rem; /* Reduce el tamaño del texto en pantallas pequeñas */
+    }
+
+    .header {
+        margin-top: 50px; /* Ajusta el margen superior */
+        margin-bottom: 20px;
+        padding: 0 15px; /* Reduce el padding lateral en pantallas pequeñas */
+    }
+
+    .btnlogin {
+        right: 10px; /* Ajusta el botón para pantallas pequeñas */
+        padding-right: 10px;
+    }
+}

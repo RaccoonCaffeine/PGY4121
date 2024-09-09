@@ -1,0 +1,27 @@
+.header{
+    margin-top: 100px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+.titulo{
+    font-size: 2rem;
+}
+.subtitulo{
+    color: gray;
+    font-size: 0.9rem;
+}
+.btnlogin{
+position: absolute;
+right: 0px;
+padding-right: 16px;
+--background-focused: #88f4be;
+--border-radius: 15px;
+
+}
+ion-item{
+    border-radius: 15px;
+    margin-bottom: 16px;
+}
+ion-icon{
+    padding-right: 10px;   
+}

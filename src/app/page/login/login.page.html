@@ -1,0 +1,33 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="header">
+    <ion-title class="titulo">Bienvenido!</ion-title>
+    <p class="subtitulo">Inicia sesión</p>
+  </div>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+    <ion-row class="ion-justify-content-center ion-align-items-center">
+      <ion-col size="12" size-md="6">
+        <ion-item>
+          <ion-icon name="person"></ion-icon>
+          <ion-input formControlName="username" label="Usuario" labelPlacement="floating" maxlength="8" [counter]="true" [minlength]="3" [maxlength]="8"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="key"></ion-icon>
+          <ion-input formControlName="password" label="Contraseña" labelPlacement="floating" placeholder="Solo números" type="password" maxlength="4"[counter]="true" [maxlength]="4"></ion-input>
+        </ion-item>
+
+        <ion-button expand="block" [disabled]="!loginForm.valid" type="submit" size="large" color="success">
+          Ingresar
+          <ion-icon slot="end" name="arrow-forward"></ion-icon>
+        </ion-button>
+        <ion-text>
+          <!-- reestablecer contraseña -->
+          <p class="ion-text-center">
+            <a routerLink="/reset-pass">¿Olvidaste tu contraseña?</a>
+          </p>
+        </ion-text>
+      </ion-col>
+    </ion-row>
+  </form>
+</ion-content>
