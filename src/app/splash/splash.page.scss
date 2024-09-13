@@ -1,0 +1,40 @@
+.splash-screen {
+    display: flex;
+    justify-content: center;   /* Centrar horizontalmente */
+    align-items: center;       /* Centrar verticalmente */
+    height: 100vh;             /* 100% de la altura de la pantalla */
+    background-color: #fff;    /* Fondo blanco (puedes cambiarlo) */
+  }
+  
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;               /* Asegura que el contenedor ocupe todo el ancho */
+    height: 100%;              /* Asegura que el contenedor ocupe toda la altura */
+  }
+  
+  .logo {
+    width: 50%;                /* Ajusta el tamaño del logo (cambia según lo necesites) */
+    max-width: 300px;          /* Tamaño máximo para el logo */
+    height: auto;              /* Mantén las proporciones de la imagen */
+    animation: fadeOut 3s ease-in-out forwards, scaleUp 3s ease-in-out forwards;
+  }
+  
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  @keyframes scaleUp {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.5);
+    }
+  }
