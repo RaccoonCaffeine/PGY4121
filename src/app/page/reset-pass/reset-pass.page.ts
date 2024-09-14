@@ -9,20 +9,22 @@ import { NavController } from '@ionic/angular';
 export class ResetPassPage{
   resetForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private navCtrl: NavController) {
+  constructor(private formBuilder: FormBuilder, private navCtrl: NavController) { // Inyectar dependencias
+    // Crear el formulario
     this.resetForm = this.formBuilder.group({
+      // Campos del formulario:
       username:
       ['',
         [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.maxLength(8),
+          Validators.required, // Campo requerido
+          Validators.minLength(3), // Mínimo 3 caracteres
+          Validators.maxLength(8), // Máximo 8 caracteres
           Validators.pattern('^[a-zA-Z0-9]+$'), // Solo alfanumérico
         ],
       ]
     });
   }
-    onReset() {
+    onReset() { // Método para enviar el formulario
       if (this.resetForm.valid) {
         const username = this.resetForm.get('username')?.value;
   
