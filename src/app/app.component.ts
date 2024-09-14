@@ -1,14 +1,3 @@
-/* import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss'],
-})
-export class AppComponent {
-  constructor() {}
-} */
-
   import { Component } from '@angular/core';
   import { Router } from '@angular/router';
   import { Platform } from '@ionic/angular';
@@ -28,10 +17,8 @@ export class AppComponent {
   
     initializeApp() {
       this.platform.ready().then(() => {
-        // Simula un retardo para el splash screen
-        setTimeout(() => {
-          // Redirigir al login después de la pantalla de splash
-          this.router.navigateByUrl('/login');
+        setTimeout(() => { // Simula un retardo para el splash screen
+          this.router.navigateByUrl('/login'); // Redirigir al login después de la pantalla de splash
         }, 3000); // Duración de la animación del splash en milisegundos
       });
     }

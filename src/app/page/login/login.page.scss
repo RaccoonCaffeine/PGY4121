@@ -1,27 +1,27 @@
 .header{
-    margin-top: 100px;
-    margin-bottom: 30px;
-    text-align: center;
+    margin-top: 100px; /* Añade margen superior */
+    margin-bottom: 30px; /* Añade margen inferior */
+    text-align: center; /* Centra el texto */
 }
 .titulo{
-    font-size: 2rem;
+    font-size: 2rem; /* Tamaño del texto */
 }
 .subtitulo{
-    color: gray;
-    font-size: 0.9rem;
+    color: gray; /* Color del texto */
+    font-size: 0.9rem; /* Tamaño del texto */
 }
 .btnlogin{
-position: absolute;
-right: 0px;
-padding-right: 16px;
---background-focused: #88f4be;
---border-radius: 15px;
+position: absolute; /* Posición absoluta */ 
+right: 0px; /* Alinea el botón a la derecha */
+padding-right: 16px; /* Añade padding derecho */
+--background-focused: #88f4be; /* Color de fondo al hacer foco */
+--border-radius: 15px; /* Radio de borde */
 
 }
 ion-item{
-    border-radius: 15px;
-    margin-bottom: 16px;
+    border-radius: 15px; /* Radio de borde */
+    margin-bottom: 16px; /* Añade margen inferior */ 
 }
 ion-icon{
-    padding-right: 10px;   
+    padding-right: 10px; /* Añade padding derecho */
 }

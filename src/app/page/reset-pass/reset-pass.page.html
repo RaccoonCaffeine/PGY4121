@@ -1,19 +1,24 @@
+<!-- Componente de reestablecimiento de contraseña -->
 <ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Header de la pagina -->
   <div class="header">
     <h1>Reestablece tu contraseña</h1>
   </div>
+  <!-- Formulario de reestablecimiento de contraseña -->
   <form [formGroup]="resetForm" (ngSubmit)="onReset()" class="login-form">
     <ion-row class="ion-justify-content-center ion-align-items-center">
       <ion-col size="12" size-md="6">
+        <!-- Input de usuario -->
         <ion-item>
           <ion-icon name="person"></ion-icon>
           <ion-input formControlName="username" label="Usuario" labelPlacement="floating" maxlength="8" [counter]="true" [minlength]="3" [maxlength]="8"></ion-input>
         </ion-item>
-
+        <!-- Boton de reinicio de contraseña -->
         <ion-button expand="block" [disabled]="!resetForm.valid" type="submit" size="large" color="success">
-          Ingresar
+          Reiniciar Contraseña
           <ion-icon slot="end" name="arrow-forward"></ion-icon>
         </ion-button>
+        <!-- Enlace a la pagina de inicio de sesion -->
         <ion-text>
           <p class="ion-text-center">
             <a routerLink="/login">Iniciar Sesión</a>

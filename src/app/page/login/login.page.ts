@@ -10,37 +10,40 @@ import { NavController } from '@ionic/angular';
 export class LoginPage {
   loginForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private navCtrl: NavController) {
+  constructor(private formBuilder: FormBuilder, private navCtrl: NavController) { // Inyectar dependencias
+   // Crear el formulario
     this.loginForm = this.formBuilder.group({
+      // Campos del formulario:
       username:
       ['',
         [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.maxLength(8),
+          Validators.required, // Campo requerido
+          Validators.minLength(3), // Mínimo 3 caracteres
+          Validators.maxLength(8), // Máximo 8 caracteres
           Validators.pattern('^[a-zA-Z0-9]+$'), // Solo alfanumérico
         ],
       ],
       password: [
         '',
         [
-          Validators.required,
-          Validators.minLength(4),
-          Validators.maxLength(4),
+          Validators.required, // Campo requerido
+          Validators.minLength(4), // Mínimo 4 caracteres
+          Validators.maxLength(4), // Máximo 4 caracteres
           Validators.pattern('^[0-9]+$'), // Solo numérico
         ],
       ],
     });
   }
 
-  onLogin() {
+  onLogin() { // Método para enviar el formulario
+    // Verificar si el formulario es valido
     if (this.loginForm.valid) {
+      // Obtener el valor del campo username
       const username = this.loginForm.get('username')?.value;
-      const password = this.loginForm.get('password')?.value;
-
       // Navegar a la página Home y pasar datos
       this.navCtrl.navigateForward('/home', {
-        queryParams: { username, password },
+        // Pasar el username como parámetro de la URL
+        queryParams: { username },
       });
     } else {
       console.log('Formulario inválido');

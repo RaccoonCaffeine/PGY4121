@@ -1,22 +1,25 @@
+<!-- Componente de login -->
 <ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Header de la pagina -->
   <div class="header">
     <ion-title class="titulo">Bienvenido!</ion-title>
     <p class="subtitulo">Inicia sesión</p>
   </div>
-
+  <!-- Formulario de login -->
   <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
     <ion-row class="ion-justify-content-center ion-align-items-center">
-      <ion-col size="12" size-md="6">
+      <ion-col size="12" size-md="6" >
+        <!-- Input de usuario -->
         <ion-item>
           <ion-icon name="person"></ion-icon>
           <ion-input formControlName="username" label="Usuario" labelPlacement="floating" maxlength="8" [counter]="true" [minlength]="3" [maxlength]="8"></ion-input>
         </ion-item>
-
+        <!-- Input de contraseña -->
         <ion-item>
           <ion-icon name="key"></ion-icon>
           <ion-input formControlName="password" label="Contraseña" labelPlacement="floating" placeholder="Solo números" type="password" maxlength="4"[counter]="true" [maxlength]="4"></ion-input>
         </ion-item>
-
+        <!-- Boton de envio de formulario -->
         <ion-button expand="block" [disabled]="!loginForm.valid" type="submit" size="large" color="success">
           Ingresar
           <ion-icon slot="end" name="arrow-forward"></ion-icon>
