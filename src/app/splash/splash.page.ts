@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-
+import { Platform } from '@ionic/angular';
 @Component({
   selector: 'app-splash',
   templateUrl: './splash.page.html',
@@ -8,8 +8,18 @@ import { Router } from '@angular/router';
 })
 export class SplashPage {
 
-  constructor(private router: Router) {}
+  constructor(
+    private platform: Platform,
+    private router: Router
+  ) {
+    this.initializeApp();
+  }
 
-  ngOnInit() { 
+  initializeApp() {
+    this.platform.ready().then(() => {
+      setTimeout(() => { // Simula un retardo para el splash screen
+      this.router.navigateByUrl('/login'); // Redirigir al login después de la pantalla de splash
+      }, 3000); // Duración de la animación del splash en milisegundos
+    });
   }
 }

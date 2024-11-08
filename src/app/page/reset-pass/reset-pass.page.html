@@ -11,7 +11,7 @@
         <!-- Input de usuario -->
         <ion-item>
           <ion-icon name="person"></ion-icon>
-          <ion-input formControlName="username" label="Usuario" labelPlacement="floating" maxlength="8" [counter]="true" [minlength]="3" [maxlength]="8"></ion-input>
+          <ion-input formControlName="username" label="Email" labelPlacement="floating" maxlength="50" [counter]="true" [minlength]="15" [maxlength]="50"></ion-input>
         </ion-item>
         <!-- Boton de reinicio de contraseña -->
         <ion-button expand="block" [disabled]="!resetForm.valid" type="submit" size="large" color="success">
@@ -21,7 +21,7 @@
         <!-- Enlace a la pagina de inicio de sesion -->
         <ion-text>
           <p class="ion-text-center">
-            <a routerLink="/login">Iniciar Sesión</a>
+            <a (click)="navigateToLogin()">Iniciar Sesión</a>
           </p>
         </ion-text>
       </ion-col>

@@ -4,21 +4,115 @@
       <ion-title size="large">home</ion-title>
     </ion-toolbar>
   </ion-header>
+
   <ion-row class="ion-justify-content-center ion-align-items-center">
-    <ion-col size-lg="6" size-md="12" >
+    <ion-col size-lg="6" size-md="12">
+      <!-- Tarjeta de bienvenida -->
       <ion-card class="ion-justify-content-center ion-align-items-center">
         <ion-card-content class="ion-text-center">
           <img alt="Logo" src="assets/icon/Fanic_logoV2.png" />
           <ion-card-header>
-            <ion-card-title>Bienvenido a Fanic {{username}}</ion-card-title>
-            <ion-card-subtitle>Empresa de estacionamiento </ion-card-subtitle>
+            <ion-card-title>Bienvenido a Fanic {{currentUser?.username}}</ion-card-title>
+            <ion-card-subtitle>
+              {{isAdmin ? 'Panel de Administración' : 'Empresa de estacionamiento'}}
+            </ion-card-subtitle>
           </ion-card-header>
-
           <ion-card-content>
-            Junto con nosotros tienes la oportunidad para arrendar tu espacio vacío de estacionamineto y generen ingresos adicionales
+            {{isAdmin ? 'Gestiona los estacionamientos' : 'Busca tu estacionamiento más cercano'}}
           </ion-card-content>
         </ion-card-content>
       </ion-card>
+
+      <!-- Botón para agregar estacionamiento (solo admin) -->
+      <ion-button *ngIf="isAdmin" (click)="addParkingLot()" expand="block" color="primary" class="ion-margin-bottom">
+        <ion-icon name="add" slot="start"></ion-icon>
+        Agregar Estacionamiento
+      </ion-button>
+
+      <!-- Lista de Estacionamientos -->
+      <ion-card *ngIf="!isMapVisible">
+        <ion-card-header>
+          <ion-card-title>Estacionamientos Disponibles</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list>
+            <ion-item *ngFor="let location of displayedLocations">
+              <ion-label>
+                <h2>{{ location.name }}</h2>
+                <p>{{ location.address }}</p>
+                <p>
+                  <ion-badge [color]="location.available ? 'success' : 'danger'">
+                    {{ location.available ? 'Disponible' : 'No disponible' }}
+                  </ion-badge>
+                  <ion-text color="medium"> · ${{ location.price }}/hora</ion-text>
+                </p>
+              </ion-label>
+
+              <!-- Botones de acción para admin -->
+              <ion-buttons slot="end" *ngIf="isAdmin" class="action-buttons">
+                <ion-button size="small" (click)="toggleAvailability(location)">
+                  <ion-icon [name]="location.available ? 'eye' : 'eye-off'" size="small"></ion-icon>
+                </ion-button>
+                <ion-button size="small" (click)="editParkingLot(location)">
+                  <ion-icon name="create" size="small"></ion-icon>
+                </ion-button>
+                <ion-button size="small" color="danger" (click)="deleteParkingLot(location.id!)">
+                  <ion-icon name="trash" size="small"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+
+              <!-- Botón para ver en mapa para usuarios normales -->
+              <ion-button *ngIf="!isAdmin" 
+                         (click)="showLocationOnMap(location)" 
+                         fill="clear" 
+                         size="small" 
+                         class="map-button">
+                <ion-icon name="map" size="small"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+
+          <!-- Nueva paginación en la parte inferior -->
+          <div class="pagination-container">
+            <ion-button 
+              *ngFor="let page of getPageArray(); let i = index" 
+              (click)="onPageClick($event, i)"
+              [color]="currentPage === i ? 'primary' : 'medium'"
+              size="small"
+              fill="clear">
+              {{ i + 1 }}
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Contenedor del Mapa -->
+      <div *ngIf="isMapVisible" class="map-container">
+        <ion-card>
+          <ion-card-header>
+            <ion-row>
+              <ion-col size="2">
+                <ion-button fill="clear" (click)="hideMap()">
+                  <ion-icon name="arrow-back"></ion-icon>
+                </ion-button>
+              </ion-col>
+              <ion-col size="10">
+                <ion-card-title>{{ selectedLocation?.name }}</ion-card-title>
+                <ion-card-subtitle>{{ selectedLocation?.address }}</ion-card-subtitle>
+              </ion-col>
+            </ion-row>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="map" #map></div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+      <!-- Botón logout -->
+      <ion-button (click)="onlogout()" expand="block" size="large" color="danger">
+        Cerrar sesión
+        <ion-icon slot="end" name="log-out"></ion-icon>
+      </ion-button>
     </ion-col>
   </ion-row>
 </ion-content>
