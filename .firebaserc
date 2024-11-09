@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "fanic-parking": {
+      "hosting": {
+        "app": [
+          "fanic-parking"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "fanic-parking"
+  }
+}

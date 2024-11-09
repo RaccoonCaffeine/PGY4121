@@ -6,29 +6,33 @@
     <p class="subtitulo">Inicia sesión</p>
   </div>
   <!-- Formulario de login -->
-  <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+  <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="login-form">
     <ion-row class="ion-justify-content-center ion-align-items-center">
       <ion-col size="12" size-md="6" >
-        <!-- Input de usuario -->
+        <!-- Input de email -->
         <ion-item>
           <ion-icon name="person"></ion-icon>
-          <ion-input formControlName="username" label="Email" labelPlacement="floating" maxlength="50" [counter]="true" [minlength]="15" [maxlength]="50"></ion-input>
+          <ion-input formControlName="email" label="Email" labelPlacement="floating" maxlength="50" [counter]="true" [minlength]="15" [maxlength]="50"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="person"></ion-icon>
+          <ion-input formControlName="username" label="Nombre de usuario" labelPlacement="floating" maxlength="15" [minlength]="6"[counter]="true" [maxlength]="15"></ion-input>
         </ion-item>
         <!-- Input de contraseña -->
         <ion-item>
           <ion-icon name="key"></ion-icon>
-          <ion-input formControlName="password" label="Contraseña" labelPlacement="floating" type="password" maxlength="15"[counter]="true" [minlength]="6" [maxlength]="15"></ion-input>
+          <ion-input formControlName="password" label="Contraseña" labelPlacement="floating" type="password" maxlength="15" [minlength]="6"[counter]="true" [maxlength]="15"></ion-input>
         </ion-item>
         <!-- Boton de envio de formulario -->
-        <ion-button expand="block" [disabled]="!loginForm.valid" type="submit" size="large" color="success">
+        <ion-button expand="block" [disabled]="!registerForm.valid" type="submit" size="large" color="success">
           Ingresar
           <ion-icon slot="end" name="arrow-forward"></ion-icon>
         </ion-button>
         <ion-text>
-            <!-- reestablecer contraseña -->
-            <p class="ion-text-center">
-            <a (click)="navigateToRegister()">Registrarse</a>
-            </p>
+          <!-- reestablecer contraseña -->
+          <p class="ion-text-center">
+            <a (click)="navigateToLogin()">Iniciar Sesión</a>
+          </p>
         </ion-text>
         <ion-text>
           <!-- reestablecer contraseña -->

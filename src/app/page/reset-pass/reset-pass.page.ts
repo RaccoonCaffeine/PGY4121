@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { NavController } from '@ionic/angular';
+import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-reset-pass',
   templateUrl: './reset-pass.page.html',
@@ -9,7 +10,7 @@ import { NavController } from '@ionic/angular';
 export class ResetPassPage{
   resetForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private navCtrl: NavController) { // Inyectar dependencias
+  constructor(private formBuilder: FormBuilder, private navCtrl: NavController,private userServices: UserService) { // Inyectar dependencias
     // Crear el formulario
     this.resetForm = this.formBuilder.group({
       // Campos del formulario:
@@ -17,9 +18,9 @@ export class ResetPassPage{
       ['',
         [
           Validators.required, // Campo requerido
-          Validators.minLength(3), // Mínimo 3 caracteres
-          Validators.maxLength(8), // Máximo 8 caracteres
-          Validators.pattern('^[a-zA-Z0-9]+$'), // Solo alfanumérico
+          Validators.minLength(15), // Mínimo 6 caracteres
+          Validators.maxLength(50), // Máximo 15 caracteres
+          Validators.email, // Formato email
         ],
       ]
     });
@@ -27,13 +28,15 @@ export class ResetPassPage{
     onReset() { // Método para enviar el formulario
       if (this.resetForm.valid) {
         const username = this.resetForm.get('username')?.value;
-  
-        // Navegar a la página Home y pasar datos
-        this.navCtrl.navigateForward('/login', {
-          queryParams: { username },
+        this.userServices.resetPassword(username).then(() => {
+          console.log('Correo enviado');
+          this.navCtrl.navigateForward(['/login']);
+        }).catch((error) => {
+          console.log('Error al enviar el correo', error);
         });
-      } else {
-        console.log('Formulario inválido');
       }
+    }
+    navigateToLogin() {
+      this.navCtrl.navigateForward(['/login']);
     }
 }
