@@ -1,8 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, authState } from '@angular/fire/auth';
 import { doc, setDoc, getFirestore, collectionData, Firestore, getDoc, collection, addDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
-import { initializeApp } from '@angular/fire/app';
-import { environment } from 'src/environments/environment';
 import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -29,14 +27,18 @@ export class UserService {
     return sendPasswordResetEmail(this.auth, email);
   }
 
-  createUserProfile(user: any) {
-    const app = initializeApp(environment.firebase);
-    const db = getFirestore(app);
-    return setDoc(doc(db, 'users', user.uid), {
-      username: user.username,
-      email: user.email,
-      rol: 'user',
-    });
+  async createUserProfile(user: any) {
+    try {
+      const userRef = doc(this.db, 'users', user.uid);
+      await setDoc(userRef, {
+        username: user.username,
+        email: user.email,
+        rol: 'user',
+      });
+    } catch (error) {
+      console.error('Error creating user profile:', error);
+      throw error;
+    }
   }
 
   userState() {

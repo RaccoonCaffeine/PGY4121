@@ -1,0 +1,25 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Header de la página -->
+  <div class="header">
+    <ion-title class="titulo">¡Ups!</ion-title>
+    <p class="subtitulo">Página no encontrada</p>
+  </div>
+
+  <!-- Contenido principal -->
+  <ion-row class="ion-justify-content-center ion-align-items-center">
+    <ion-col size="12" size-md="6">
+      <div class="error-container">
+        <div class="error-number">404</div>
+        <p class="error-description">
+          La página que estás buscando parece que se ha perdido en el ciberespacio.
+        </p>
+        
+        <!-- Botón de regreso -->
+        <ion-button expand="block" (click)="goHome()" size="large" color="success">
+          Volver al inicio
+          <ion-icon slot="end" name="home"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-content>

@@ -24,7 +24,6 @@ export class LoginPage {
         '',
         [
           Validators.required,
-          Validators.minLength(15),
           Validators.maxLength(50),
           Validators.email,
         ],

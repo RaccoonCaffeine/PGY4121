@@ -33,8 +33,12 @@ const routes: Routes = [
     loadChildren: () => import('./splash/splash.module').then(m => m.SplashPageModule) // Carga el módulo splash
   },
   {
+    path: 'error',
+    loadChildren: () => import('./page/error/error.module').then( m => m.ErrorPageModule)
+  },
+  {
     path: '**', // Cualquier otra ruta
-    redirectTo: 'splash', // Redirige primero al splash screen
+    redirectTo: 'error', // Redirige primero al error screen
     pathMatch: 'full' // La redirección
   },
 ];

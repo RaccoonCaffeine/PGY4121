@@ -1,67 +1,82 @@
+<!-- Contenedor principal con scroll completo -->
 <ion-content [fullscreen]="true">
+  <!-- Encabezado colapsable que se condensa al hacer scroll -->
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">home</ion-title>
     </ion-toolbar>
   </ion-header>
 
+  <!-- Fila principal con contenido centrado horizontal y verticalmente -->
   <ion-row class="ion-justify-content-center ion-align-items-center">
+    <!-- Columna responsiva: 6 columnas en pantallas grandes, 12 en medianas -->
     <ion-col size-lg="6" size-md="12">
-      <!-- Tarjeta de bienvenida -->
+      <!-- Tarjeta de bienvenida con logo y mensaje personalizado -->
       <ion-card class="ion-justify-content-center ion-align-items-center">
         <ion-card-content class="ion-text-center">
+          <!-- Logo de la aplicación -->
           <img alt="Logo" src="assets/icon/Fanic_logoV2.png" />
           <ion-card-header>
+            <!-- Título dinámico que muestra el nombre del usuario -->
             <ion-card-title>Bienvenido a Fanic {{currentUser?.username}}</ion-card-title>
+            <!-- Subtítulo condicional basado en el rol del usuario -->
             <ion-card-subtitle>
               {{isAdmin ? 'Panel de Administración' : 'Empresa de estacionamiento'}}
             </ion-card-subtitle>
           </ion-card-header>
+          <!-- Mensaje personalizado según el rol del usuario -->
           <ion-card-content>
             {{isAdmin ? 'Gestiona los estacionamientos' : 'Busca tu estacionamiento más cercano'}}
           </ion-card-content>
         </ion-card-content>
       </ion-card>
-
-      <!-- Botón para agregar estacionamiento (solo admin) -->
+      <div #mapUser id="map-user" style="height: 50vh; width: 100%;"></div>
+      <!-- Botón de agregar estacionamiento (visible solo para administradores) -->
       <ion-button *ngIf="isAdmin" (click)="addParkingLot()" expand="block" color="primary" class="ion-margin-bottom">
         <ion-icon name="add" slot="start"></ion-icon>
         Agregar Estacionamiento
       </ion-button>
 
-      <!-- Lista de Estacionamientos -->
+      <!-- Lista de estacionamientos (visible cuando el mapa no está activo) -->
       <ion-card *ngIf="!isMapVisible">
         <ion-card-header>
           <ion-card-title>Estacionamientos Disponibles</ion-card-title>
         </ion-card-header>
         <ion-card-content>
+          <!-- Lista iterativa de estacionamientos -->
           <ion-list>
             <ion-item *ngFor="let location of displayedLocations">
+              <!-- Información del estacionamiento: nombre, dirección y estado -->
               <ion-label>
                 <h2>{{ location.name }}</h2>
                 <p>{{ location.address }}</p>
                 <p>
+                  <!-- Indicador de disponibilidad con color dinámico -->
                   <ion-badge [color]="location.available ? 'success' : 'danger'">
                     {{ location.available ? 'Disponible' : 'No disponible' }}
                   </ion-badge>
+                  <!-- Precio por hora -->
                   <ion-text color="medium"> · ${{ location.price }}/hora</ion-text>
                 </p>
               </ion-label>
 
-              <!-- Botones de acción para admin -->
+              <!-- Grupo de botones de administración (solo visible para admin) -->
               <ion-buttons slot="end" *ngIf="isAdmin" class="action-buttons">
+                <!-- Botón para cambiar disponibilidad -->
                 <ion-button size="small" (click)="toggleAvailability(location)">
                   <ion-icon [name]="location.available ? 'eye' : 'eye-off'" size="small"></ion-icon>
                 </ion-button>
+                <!-- Botón de edición -->
                 <ion-button size="small" (click)="editParkingLot(location)">
                   <ion-icon name="create" size="small"></ion-icon>
                 </ion-button>
+                <!-- Botón de eliminación -->
                 <ion-button size="small" color="danger" (click)="deleteParkingLot(location.id!)">
                   <ion-icon name="trash" size="small"></ion-icon>
                 </ion-button>
               </ion-buttons>
 
-              <!-- Botón para ver en mapa para usuarios normales -->
+              <!-- Botón para ver ubicación en mapa (solo usuarios normales) -->
               <ion-button *ngIf="!isAdmin" 
                          (click)="showLocationOnMap(location)" 
                          fill="clear" 
@@ -72,7 +87,7 @@
             </ion-item>
           </ion-list>
 
-          <!-- Nueva paginación en la parte inferior -->
+          <!-- Sistema de paginación para la lista de estacionamientos -->
           <div class="pagination-container">
             <ion-button 
               *ngFor="let page of getPageArray(); let i = index" 
@@ -86,29 +101,33 @@
         </ion-card-content>
       </ion-card>
 
-      <!-- Contenedor del Mapa -->
+      <!-- Visualización del mapa con detalles del estacionamiento seleccionado -->
       <div *ngIf="isMapVisible" class="map-container">
         <ion-card>
+          <!-- Encabezado del mapa con botón de retorno y detalles -->
           <ion-card-header>
             <ion-row>
               <ion-col size="2">
+                <!-- Botón para volver a la lista -->
                 <ion-button fill="clear" (click)="hideMap()">
                   <ion-icon name="arrow-back"></ion-icon>
                 </ion-button>
               </ion-col>
               <ion-col size="10">
+                <!-- Detalles del estacionamiento seleccionado -->
                 <ion-card-title>{{ selectedLocation?.name }}</ion-card-title>
                 <ion-card-subtitle>{{ selectedLocation?.address }}</ion-card-subtitle>
               </ion-col>
             </ion-row>
           </ion-card-header>
+          <!-- Contenedor del mapa -->
           <ion-card-content>
             <div class="map" #map></div>
           </ion-card-content>
         </ion-card>
       </div>
 
-      <!-- Botón logout -->
+      <!-- Botón de cierre de sesión -->
       <ion-button (click)="onlogout()" expand="block" size="large" color="danger">
         Cerrar sesión
         <ion-icon slot="end" name="log-out"></ion-icon>
