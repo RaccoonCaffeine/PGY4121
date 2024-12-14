@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import { UserService } from '../services/user.service';
-import { emailVerified } from '@angular/fire/auth-guard';
+
 @Component({
   selector: 'app-registro',
   templateUrl: './registro.page.html',
@@ -11,63 +11,61 @@ import { emailVerified } from '@angular/fire/auth-guard';
 export class RegistroPage {
   registerForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private userService: UserService,private router: NavController) {
-    // Inyectar dependencias
-    // Crear el formulario
+  constructor(
+    private formBuilder: FormBuilder, 
+    private userService: UserService,
+    private router: NavController
+  ) {
     this.registerForm = this.formBuilder.group({
-      // Campos del formulario:
-      email: [
-        '',
-        [
-          Validators.required, // Campo requerido
-          Validators.minLength(15), // Mínimo 6 caracteres
-          Validators.maxLength(50), // Máximo 15 caracteres
-          Validators.email, // Formato email
-        ],
-      ],
-      username: [
-        '',
-        [
-          Validators.required, // Campo requerido
-          Validators.minLength(15), // Mínimo 6 caracteres
-          Validators.maxLength(50), // Máximo 15 caracteres
-          Validators.pattern('^[a-zA-Z0-9]+$'), // Solo alfanumérico
-        
-        ],
-      ],
-      password: [
-        '',
-        [
-          Validators.required, // Campo requerido
-          Validators.minLength(6), // Mínimo 6 caracteres
-          Validators.maxLength(15), // Máximo 15 caracteres
-          Validators.pattern('^[a-zA-Z0-9]+$'), // Solo alfanumérico
-        ],
-      ],
+      email: ['', [
+        Validators.required,
+        Validators.email,
+      ]],
+      username: ['', [
+        Validators.required,
+        Validators.pattern('^[a-zA-Z0-9]+$'),
+      ]],
+      password: ['', [
+        Validators.required,
+        Validators.pattern('^[a-zA-Z0-9]+$'),
+      ]],
     });
   }
 
-  async onRegister(){
-    if(this.registerForm.valid){
+  async onRegister() {
+    if (this.registerForm.valid) {
       const email = this.registerForm.get('email')?.value;
       const username = this.registerForm.get('username')?.value;
       const password = this.registerForm.get('password')?.value;
-      try{
-        await this.userService.registerUser(email, password);
-        console.log('Usuario registrado');
-        await this.userService.createUserProfile(username);
+      
+      try {
+        // Registrar el usuario y obtener la respuesta
+        const userCredential = await this.userService.registerUser(email, password);
+        
+        // Crear el objeto de usuario con todos los datos necesarios
+        const userData = {
+          uid: userCredential.user.uid,
+          email: email,
+          username: username
+        };
+        
+        // Crear el perfil del usuario
+        await this.userService.createUserProfile(userData);
+        console.log('Usuario registrado exitosamente');
         this.router.navigateForward(['/login']);
-      }catch(error){
-        console.log('Error al registrar el usuario', error);
+      } catch (error) {
+        console.error('Error al registrar el usuario', error);
       }
-    }else{
+    } else {
       console.log('Formulario inválido');
     }
   }
-  navigateToLogin(){
+
+  navigateToLogin() {
     this.router.navigateForward(['/login']);
   }
-  navigateToReset(){
+
+  navigateToReset() {
     this.router.navigateForward(['/reset-pass']);
   }
 }

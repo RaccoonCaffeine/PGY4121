@@ -104,3 +104,44 @@ img {
     font-size: 14px;
   }
 }
+.action-buttons {
+  display: flex;
+  flex-direction: row; // Por defecto horizontal
+  gap: 4px;
+  margin-right: 8px;
+
+  @media (max-width: 576px) { // Para dispositivos móviles
+    flex-direction: column; // Cambia a vertical en móvil
+    gap: 2px; // Reduce el espacio entre botones
+    
+    ion-button {
+      --padding-start: 4px;
+      --padding-end: 4px;
+      height: 28px; // Altura más compacta
+      width: auto; // Ancho automático
+
+      ion-icon {
+        font-size: 14px; // Iconos más pequeños en móvil
+      }
+    }
+  }
+}
+
+ion-item {
+  --min-height: auto; // Permite que el item se ajuste al contenido
+  
+  @media (max-width: 576px) {
+    ion-label {
+      margin: 8px 0;
+      
+      h2 {
+        font-size: 14px; // Texto más pequeño en móvil
+      }
+      
+      p {
+        font-size: 12px;
+        margin: 2px 0;
+      }
+    }
+  }
+}

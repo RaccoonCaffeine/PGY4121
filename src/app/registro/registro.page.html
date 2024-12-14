@@ -12,16 +12,16 @@
         <!-- Input de email -->
         <ion-item>
           <ion-icon name="person"></ion-icon>
-          <ion-input formControlName="email" label="Email" labelPlacement="floating" maxlength="50" [counter]="true" [minlength]="15" [maxlength]="50"></ion-input>
+          <ion-input formControlName="email" label="Email" labelPlacement="floating"></ion-input>
         </ion-item>
         <ion-item>
           <ion-icon name="person"></ion-icon>
-          <ion-input formControlName="username" label="Nombre de usuario" labelPlacement="floating" maxlength="15" [minlength]="6"[counter]="true" [maxlength]="15"></ion-input>
+          <ion-input formControlName="username" label="Nombre de usuario" labelPlacement="floating"></ion-input>
         </ion-item>
         <!-- Input de contraseña -->
         <ion-item>
           <ion-icon name="key"></ion-icon>
-          <ion-input formControlName="password" label="Contraseña" labelPlacement="floating" type="password" maxlength="15" [minlength]="6"[counter]="true" [maxlength]="15"></ion-input>
+          <ion-input formControlName="password" label="Contraseña" labelPlacement="floating" type="password" [minlength]="6"></ion-input>
         </ion-item>
         <!-- Boton de envio de formulario -->
         <ion-button expand="block" [disabled]="!registerForm.valid" type="submit" size="large" color="success">

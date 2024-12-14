@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Fanic</string>
+    <string name="title_activity_main">Fanic</string>
+    <string name="package_name">com.fanicapp.app</string>
+    <string name="custom_url_scheme">com.fanicapp.app</string>
+</resources>

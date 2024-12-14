@@ -1,9 +1,12 @@
-import { Component, ElementRef, OnInit, Renderer2, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, Renderer2, ViewChild, AfterViewInit } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { NavController, AlertController } from '@ionic/angular';
 import { MapService } from '../services/map.service';
 import { Firestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { Geolocation } from '@capacitor/geolocation';
+
+declare const google: any;
 
 interface Location {
   id?: string;
@@ -22,14 +25,18 @@ interface Location {
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit, AfterViewInit {
+export class HomePage implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('mapUser', { static: false }) mapUserElement?: ElementRef;
   @ViewChild('map', { static: false }) mapElement?: ElementRef;
+  userMap: any;
   map: any;
   isMapVisible: boolean = false;
   selectedLocation: Location | null = null;
   currentUser: any = null;
   locations$: Observable<Location[]>;
   isAdmin: boolean = false;
+  private locationUpdateInterval: any;
+  private parkingMarkers: any[] = [];
   
   // Propiedades para paginación
   currentPage: number = 0;
@@ -51,6 +58,9 @@ export class HomePage implements OnInit, AfterViewInit {
       this.allLocations = locations;
       this.totalPages = Math.ceil(locations.length / this.itemsPerPage);
       this.updateDisplayedLocations();
+      if (this.userMap) {
+        this.updateParkingMarkers();
+      }
     });
     
     this.userService.userState().subscribe(user => {
@@ -63,9 +73,49 @@ export class HomePage implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.checkLocationPermissions();
+  }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    this.loadUserMap();
+  }
+
+  ngOnDestroy() {
+    this.stopLocationUpdates();
+    this.clearParkingMarkers();
+  }
+
+  async checkLocationPermissions() {
+    try {
+      const status = await Geolocation.checkPermissions();
+      if (status.location === 'prompt' || status.location === 'denied') {
+        const request = await Geolocation.requestPermissions();
+        if (request.location === 'granted') {
+          await this.loadUserMap();
+        }
+      }
+    } catch (error) {
+      console.error('Error checking permissions:', error);
+    }
+  }
+
+  clearParkingMarkers() {
+    this.parkingMarkers.forEach(markerInfo => {
+      markerInfo.marker.setMap(null);
+      markerInfo.infoWindow.close();
+    });
+    this.parkingMarkers = [];
+  }
+
+  updateParkingMarkers() {
+    this.clearParkingMarkers();
+    if (this.userMap) {
+      this.mapService.loadMap().then(googleMaps => {
+        this.addParkingMarkers(googleMaps);
+      });
+    }
+  }
 
   updateDisplayedLocations() {
     const start = this.currentPage * this.itemsPerPage;
@@ -84,9 +134,9 @@ export class HomePage implements OnInit, AfterViewInit {
     this.changePage();
   }
 
-  onlogout() {
-    this.userService.logout();
-    this.router.navigateForward(['/home']);
+  async onlogout() {
+    await this.userService.logout();
+    this.router.navigateForward(['/login']);
   }
 
   async showLocationOnMap(location: Location) {
@@ -152,6 +202,157 @@ export class HomePage implements OnInit, AfterViewInit {
     }
   }
 
+  async loadUserMap() {
+    if (!this.mapUserElement) {
+      console.error('User map element not found');
+      return;
+    }
+
+    try {
+      const coordinates = await this.mapService.getCurrentPosition();
+      const googleMaps = await this.mapService.loadMap();
+      const mapEl = this.mapUserElement.nativeElement;
+      
+      const userLocation = new googleMaps.LatLng(
+        coordinates.coords.latitude,
+        coordinates.coords.longitude
+      );
+
+      this.userMap = new googleMaps.Map(mapEl, {
+        center: userLocation,
+        zoom: 15,
+        styles: [
+          {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }]
+          }
+        ]
+      });
+
+      // Marcador del usuario
+      const userMarker = new googleMaps.Marker({
+        position: userLocation,
+        map: this.userMap,
+        icon: {
+          path: googleMaps.SymbolPath.CIRCLE,
+          scale: 7,
+          fillColor: '#4285F4',
+          fillOpacity: 1,
+          strokeColor: '#fff',
+          strokeWeight: 2,
+        },
+        title: 'Tu ubicación'
+      });
+
+      // Círculo alrededor de la ubicación del usuario
+      new googleMaps.Circle({
+        strokeColor: '#4285F4',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#4285F4',
+        fillOpacity: 0.35,
+        map: this.userMap,
+        center: userLocation,
+        radius: 100
+      });
+
+      this.clearParkingMarkers();
+      this.addParkingMarkers(googleMaps);
+
+      this.renderer.addClass(mapEl, 'visible');
+      this.startLocationUpdates();
+    } catch (error) {
+      console.error('Error loading user map:', error);
+    }
+  }
+
+  addParkingMarkers(googleMaps: any) {
+    this.allLocations.forEach(location => {
+      const parkingLocation = new googleMaps.LatLng(
+        location.coordinates.lat,
+        location.coordinates.lng
+      );
+
+      const markerIcon = {
+        path: googleMaps.SymbolPath.CIRCLE,
+        scale: 8,
+        fillColor: location.available ? '#4CAF50' : '#FF5252',
+        fillOpacity: 1,
+        strokeColor: '#ffffff',
+        strokeWeight: 2,
+      };
+
+      const marker = new googleMaps.Marker({
+        position: parkingLocation,
+        map: this.userMap,
+        icon: markerIcon,
+        title: location.name,
+        animation: googleMaps.Animation.DROP
+      });
+
+      const infoWindow = new googleMaps.InfoWindow({
+        content: this.createInfoWindowContent(location)
+      });
+
+      marker.addListener('click', () => {
+        this.parkingMarkers.forEach(m => m.infoWindow.close());
+        infoWindow.open(this.userMap, marker);
+      });
+
+      this.parkingMarkers.push({ marker, infoWindow, location });
+    });
+  }
+
+  createInfoWindowContent(location: Location): string {
+    return `
+      <div style="padding: 10px;">
+        <h3 style="margin: 0 0 5px 0; color: ${location.available ? '#4CAF50' : '#FF5252'}">
+          ${location.name}
+        </h3>
+        <p style="margin: 0 0 5px 0;">${location.address}</p>
+        <p style="margin: 0 0 5px 0;">Precio: ${location.price}/hora</p>
+        <p style="margin: 0; font-weight: bold; color: ${location.available ? '#4CAF50' : '#FF5252'}">
+          ${location.available ? '✓ Disponible' : '✕ No disponible'}
+        </p>
+      </div>
+    `;
+  }
+
+  startLocationUpdates() {
+    if (this.locationUpdateInterval) {
+      clearInterval(this.locationUpdateInterval);
+    }
+
+    this.locationUpdateInterval = setInterval(async () => {
+      try {
+        const coordinates = await this.mapService.getCurrentPosition();
+        const googleMaps = await this.mapService.loadMap();
+        if (this.userMap) {
+          const userLocation = new googleMaps.LatLng(
+            coordinates.coords.latitude,
+            coordinates.coords.longitude
+          );
+          this.userMap.setCenter(userLocation);
+        }
+      } catch (error) {
+        console.error('Error updating location:', error);
+      }
+    }, 30000);
+  }
+
+  stopLocationUpdates() {
+    if (this.locationUpdateInterval) {
+      clearInterval(this.locationUpdateInterval);
+      this.locationUpdateInterval = null;
+    }
+  }
+
+  getPageArray(): number[] {
+    return Array(this.totalPages).fill(0).map((_, i) => i);
+  }
+
+  // Métodos CRUD para estacionamientos
   async addParkingLot() {
     const alert = await this.alertController.create({
       header: 'Agregar Estacionamiento',
@@ -277,6 +478,7 @@ export class HomePage implements OnInit, AfterViewInit {
       available: !parking.available
     };
     await this.userService.updateParkingLot(parking.id!, updatedParking);
+    this.updateParkingMarkers();
   }
 
   async deleteParkingLot(parkingId: string) {
@@ -298,9 +500,5 @@ export class HomePage implements OnInit, AfterViewInit {
     });
 
     await alert.present();
-  }
-
-  getPageArray(): number[] {
-    return Array(this.totalPages).fill(0).map((_, i) => i);
   }
 }
